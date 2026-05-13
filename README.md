@@ -21,3 +21,20 @@ Uma aplicação interativa desenvolvida em JavaScript para entusiastas de Fórmu
 1. Clone este repositório:
    ```bash
    git clone [https://github.com/SEU_USUARIO/Defrag-Rep.git](https://github.com/SEU_USUARIO/Defrag-Rep.git)
+
+2. Acesse a pasta do projeto:
+
+Bash
+cd Defrag-Rep
+
+3. Abra o arquivo `index.html` no seu navegador de preferência.
+
+## 📖 O que eu aprendi com este projeto
+Este projeto faz parte do meu portfólio acadêmico e com ele pude aprofundar conhecimentos em:
+- Manipulação de **DOM** com JavaScript.
+- Consumo de **APIs REST**.
+- Tratamento de dados no formato **JSON**.
+- Gerenciamento de estado de interface para carregamento de dados (loading states).
+
+---
+Desenvolvido como projeto prático para a faculdade.
