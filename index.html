@@ -9,15 +9,32 @@
 <body>
     <header>
         <h1>🏎️ F1 Stats Tracker</h1>
+        <nav class="abas">
+            <button onclick="mostrarSecao('calendario')" id="btn-calendario" class="btn-aba active">Calendário</button>
+            <button onclick="mostrarSecao('pilotos')" id="btn-pilotos" class="btn-aba">Pilotos</button>
+            <button onclick="mostrarSecao('equipes')" id="btn-equipes" class="btn-aba">Equipes</button>
+        </nav>
     </header>
 
     <main>
-        <section id="calendario">
-            <h2>Calendário da Temporada</h2>
-            <div id="lista-corridas">
-                <!-- As corridas aparecerão aqui via JS -->
-                <p>Carregando corridas...</p>
+        <!-- Seção Calendário -->
+        <section id="calendario" class="secao-conteudo">
+            <h2>Calendário 2026</h2>
+            <div id="lista-corridas" class="grid-container">
+                <p>Carregando calendário...</p>
             </div>
+        </section>
+
+        <!-- Seção Pilotos -->
+        <section id="pilotos" class="secao-conteudo" style="display:none">
+            <h2>Pilotos da Temporada</h2>
+            <div id="lista-pilotos" class="grid-container"></div>
+        </section>
+
+        <!-- Seção Equipes -->
+        <section id="equipes" class="secao-conteudo" style="display:none">
+            <h2>Escuderias</h2>
+            <div id="lista-equipes" class="grid-container"></div>
         </section>
     </main>
 
