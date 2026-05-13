@@ -1,6 +1,5 @@
-/* Configurações Gerais */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     background-color: #15151e;
     color: white;
     margin: 0;
@@ -13,71 +12,60 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
-h1 { margin: 0; font-size: 2rem; }
-h2 { margin-top: 30px; color: #f1f1f1; }
-
-/* Navegação por Abas */
-.abas {
-    margin-top: 15px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
+.abas { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
 
 .btn-aba {
     background-color: #2b2b35;
     color: white;
-    border: 2px solid transparent;
-    padding: 10px 25px;
+    border: none;
+    padding: 10px 20px;
     cursor: pointer;
-    border-radius: 25px;
+    border-radius: 20px;
     font-weight: bold;
-    transition: 0.3s;
 }
 
-.btn-aba.active {
-    background-color: white;
-    color: #e10600;
-    border-color: #e10600;
-}
+.btn-aba.active { background-color: white; color: #e10600; }
 
-.btn-aba:hover {
-    background-color: #3e3e4a;
-}
-
-/* Grid e Cards */
 .grid-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    padding: 30px;
+    padding: 20px;
 }
 
 .card {
     background-color: #2b2b35;
     padding: 20px;
     border-radius: 12px;
-    width: 280px;
-    transition: transform 0.2s;
-    border-bottom: 4px solid #e10600;
+    width: 260px;
+    border-bottom: 5px solid #e10600;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.card:hover {
-    transform: translateY(-5px);
+.card:hover { transform: scale(1.03); background-color: #31313d; }
+
+.logo-equipe {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 10px;
 }
 
-.card img {
-    width: 120px;
-    height: 120px;
+.foto-piloto {
+    width: 100px;
     border-radius: 50%;
-    background-color: #15151e;
-    margin-bottom: 15px;
-    border: 3px solid #444;
+    background: #15151e;
 }
 
-.card h3 { margin: 10px 0; font-size: 1.2rem; }
-.card p { margin: 5px 0; color: #ccc; }
+.pontos-badge {
+    background-color: #e10600;
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 10px;
+}
