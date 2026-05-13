@@ -1,14 +1,144 @@
-body { font-family: 'Segoe UI', sans-serif; background-color: #15151e; color: white; margin: 0; text-align: center; }
-header { background-color: #e10600; padding: 20px 0; position: sticky; top: 0; z-index: 1000; }
-.abas { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
-.btn-aba { background-color: #2b2b35; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 20px; font-weight: bold; }
-.btn-aba.active { background-color: white; color: #e10600; }
-.grid-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 20px; }
+/* Configurações Globais */
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #15151e;
+    color: white;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
 
-.card { background-color: #2b2b35; padding: 15px; border-radius: 10px; width: 220px; border-bottom: 4px solid #e10600; transition: 0.3s; }
-.card:hover { transform: scale(1.02); }
+header {
+    background-color: #e10600;
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
 
-.foto-piloto { width: 70px; height: 70px; border-radius: 50%; background: #15151e; border: 2px solid #444; }
-.logo-equipe { width: 50px; height: 50px; object-fit: contain; margin-bottom: 5px; }
+h1 { margin: 0; font-size: 1.8rem; letter-spacing: 1px; }
+h2 { margin-top: 30px; color: #ffffff; font-weight: 800; text-transform: uppercase; }
 
-.pontos-badge { background-color: #e10600; padding: 3px 12px; border-radius: 12px; font-weight: bold; display: inline-block; margin-top: 8px; font-size: 0.9rem; }
+/* Navegação por Abas */
+.abas {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-aba {
+    background-color: #2b2b35;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-aba.active {
+    background-color: white;
+    color: #e10600;
+    box-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
+
+.btn-aba:hover:not(.active) {
+    background-color: #3e3e4a;
+}
+
+/* Container de Grid */
+.grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Estilização dos Cards */
+.card {
+    background-color: #1f1f27;
+    padding: 20px;
+    border-radius: 10px;
+    width: 200px; /* Largura ajustada para caberem mais na linha */
+    border-bottom: 4px solid #e10600;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    background-color: #2b2b35;
+}
+
+/* Imagens e Ícones (Tamanhos Ajustados) */
+.foto-piloto {
+    width: 80px; /* Menor para ficar elegante */
+    height: 80px;
+    border-radius: 50%;
+    background: #15151e;
+    border: 2px solid #3e3e4a;
+    margin-bottom: 10px;
+    object-fit: cover;
+}
+
+.logo-equipe {
+    width: 60px; /* Tamanho ajustado para não quebrar */
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 10px;
+    filter: brightness(0) invert(1); /* Deixa a logo branca se necessário */
+}
+
+/* Badges de Pontuação */
+.pontos-badge {
+    background-color: #e10600;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    margin-top: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Textos dentro do Card */
+.card h3 {
+    margin: 10px 0 5px 0;
+    font-size: 1.1rem;
+    line-height: 1.2;
+}
+
+.card p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #a1a1a1;
+}
+
+.card small {
+    margin-top: 10px;
+    color: #e10600;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+}
+
+/* Responsividade para Celulares */
+@media (max-width: 600px) {
+    .card {
+        width: 140px;
+        padding: 15px;
+    }
+    .foto-piloto { width: 60px; height: 60px; }
+    h1 { font-size: 1.4rem; }
+}
