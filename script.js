@@ -1,6 +1,6 @@
 const API_BASE = "https://api.openf1.org/v1";
 
-// Traduções para o Calendário
+// 1. TRADUÇÃO DO CALENDÁRIO
 const traducoesCorridas = {
     "Bahrain Grand Prix": "Grande Prêmio do Bahrein",
     "Saudi Arabian Grand Prix": "Grande Prêmio da Arábia Saudita",
@@ -28,26 +28,41 @@ const traducoesCorridas = {
     "Abu Dhabi Grand Prix": "Grande Prêmio de Abu Dhabi"
 };
 
-// Ícone SVG para as equipes
-const LOGO_EQUIPE_SVG = `<svg class="logo-equipe-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 16.5L16.5 12L21 7.5V16.5ZM3 7.5L7.5 12L3 16.5V7.5ZM12 4.5L16.5 9L12 13.5L7.5 9L12 4.5ZM12 19.5L7.5 15L12 10.5L16.5 15L12 19.5Z" fill="white"/></svg>`;
-
-// PONTUAÇÃO REAL ACUMULADA ATÉ 13/05/2026 (Cache para evitar erro 429)
+// 2. DADOS OFICIAIS (Baseados em image_1c495f.png e image_1c4921.png)
 const MUNDIAL_PILOTOS = [
-    { nome: "Kimi ANTONELLI", equipe: "Mercedes", pontos: 112, cor: "27F4D2" },
-    { nome: "Max VERSTAPPEN", equipe: "Red Bull Racing", pontos: 105, cor: "3671C6" },
-    { nome: "Lando NORRIS", equipe: "McLaren", pontos: 89, cor: "FF8000" },
-    { nome: "Charles LECLERC", equipe: "Ferrari", pontos: 82, cor: "E8002D" },
-    { nome: "Oscar PIASTRI", equipe: "McLaren", pontos: 64, cor: "FF8000" },
-    { nome: "Lewis HAMILTON", equipe: "Ferrari", pontos: 58, cor: "E8002D" },
-    { nome: "George RUSSELL", equipe: "Mercedes", pontos: 44, cor: "27F4D2" },
-    { nome: "Carlos SAINZ", equipe: "Williams", pontos: 32, cor: "64C4FF" }
+    { nome: "A. Antonelli", equipe: "Mercedes", pontos: 100, cor: "27F4D2" },
+    { nome: "G. Russell", equipe: "Mercedes", pontos: 80, cor: "27F4D2" },
+    { nome: "C. Leclerc", equipe: "Ferrari", pontos: 59, cor: "E10600" },
+    { nome: "L. Norris", equipe: "McLaren", pontos: 51, cor: "FF8000" },
+    { nome: "L. Hamilton", equipe: "Ferrari", pontos: 51, cor: "E10600" },
+    { nome: "O. Piastri", equipe: "McLaren", pontos: 43, cor: "FF8000" },
+    { nome: "M. Verstappen", equipe: "Red Bull", pontos: 26, cor: "3671C6" },
+    { nome: "O. Bearman", equipe: "Haas", pontos: 17, cor: "B6BABD" },
+    { nome: "P. Gasly", equipe: "Alpine", pontos: 16, cor: "0093CC" },
+    { nome: "L. Lawson", equipe: "Racing Bulls", pontos: 10, cor: "6692FF" },
+    { nome: "F. Colapinto", equipe: "Alpine", pontos: 7, cor: "0093CC" },
+    { nome: "A. Lindblad", equipe: "Racing Bulls", pontos: 4, cor: "6692FF" },
+    { nome: "I. Hadjar", equipe: "Red Bull", pontos: 4, cor: "3671C6" },
+    { nome: "C. Sainz Jr.", equipe: "Williams", pontos: 4, cor: "64C4FF" },
+    { nome: "G. Bortoleto", equipe: "Audi F1 Team", pontos: 2, cor: "000000" },
+    { nome: "E. Ocon", equipe: "Haas", pontos: 1, cor: "B6BABD" },
+    { nome: "A. Albon", equipe: "Williams", pontos: 1, cor: "64C4FF" },
+    { nome: "N. Hulkenberg", equipe: "Audi F1 Team", pontos: 0, cor: "000000" },
+    { nome: "V. Bottas", equipe: "Cadillac", pontos: 0, cor: "FBBD08" },
+    { nome: "S. Perez", equipe: "Cadillac", pontos: 0, cor: "FBBD08" },
+    { nome: "F. Alonso", equipe: "Aston Martin", pontos: 0, cor: "229971" },
+    { nome: "L. Stroll", equipe: "Aston Martin", pontos: 0, cor: "229971" }
 ];
 
+// 3. LOGO SVG GENÉRICO PARA EQUIPES
+const LOGO_EQUIPE_SVG = `<svg class="logo-equipe-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 16.5L16.5 12L21 7.5V16.5ZM3 7.5L7.5 12L3 16.5V7.5ZM12 4.5L16.5 9L12 13.5L7.5 9L12 4.5ZM12 19.5L7.5 15L12 10.5L16.5 15L12 19.5Z" fill="white"/></svg>`;
+
+// 4. CONTROLE DE NAVEGAÇÃO
 function mostrarSecao(id) {
     document.querySelectorAll('.secao-conteudo').forEach(s => s.style.display = 'none');
     document.querySelectorAll('.btn-aba').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).style.display = 'block';
     
+    document.getElementById(id).style.display = 'block';
     const btn = document.getElementById(`btn-${id}`);
     if (btn) btn.classList.add('active');
 
@@ -56,12 +71,15 @@ function mostrarSecao(id) {
     if (id === 'equipes') renderizarMundial('equipes');
 }
 
+// 5. BUSCAR CALENDÁRIO (API)
 async function buscarCalendario() {
     const container = document.getElementById('lista-corridas');
-    container.innerHTML = "Carregando...";
+    container.innerHTML = "<p>Carregando corridas...</p>";
     try {
         const res = await fetch(`${API_BASE}/meetings?year=2026`);
         const dados = await res.json();
+        
+        // Remove testes de pré-temporada
         const corridas = dados.filter(c => !c.meeting_name.toLowerCase().includes("pre-season"));
         
         container.innerHTML = '';
@@ -74,9 +92,12 @@ async function buscarCalendario() {
                     <p>📅 ${new Date(c.date_start).toLocaleDateString('pt-BR')}</p>
                 </div>`;
         });
-    } catch (e) { container.innerHTML = "Erro ao conectar com a API."; }
+    } catch (e) {
+        container.innerHTML = "<p>Erro ao carregar calendário.</p>";
+    }
 }
 
+// 6. RENDERIZAR CLASSIFICAÇÕES (ESTÁTICO PARA PRECISÃO)
 function renderizarMundial(tipo) {
     const container = tipo === 'pilotos' ? document.getElementById('lista-pilotos') : document.getElementById('lista-equipes');
     container.innerHTML = '';
@@ -84,22 +105,29 @@ function renderizarMundial(tipo) {
     if (tipo === 'pilotos') {
         MUNDIAL_PILOTOS.forEach(p => {
             container.innerHTML += `
-                <div class="card" style="border-bottom-color: #${p.cor}">
-                    <div style="font-size: 2rem;">👤</div>
+                <div class="card" style="border-bottom: 4px solid #${p.cor}">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">👤</div>
                     <h3>${p.nome}</h3>
                     <p>${p.equipe}</p>
                     <div class="pontos-badge">${p.pontos} PTS</div>
                 </div>`;
         });
     } else {
-        const equipes = {};
+        // Agrupa pontos por equipe automaticamente
+        const equipesMap = {};
         MUNDIAL_PILOTOS.forEach(p => {
-            if (!equipes[p.equipe]) equipes[p.equipe] = { nome: p.equipe, cor: p.cor, pontos: 0 };
-            equipes[p.equipe].pontos += p.pontos;
+            if (!equipesMap[p.equipe]) {
+                equipesMap[p.equipe] = { nome: p.equipe, pontos: 0, cor: p.cor };
+            }
+            equipesMap[p.equipe].pontos += p.pontos;
         });
-        Object.values(equipes).sort((a,b) => b.pontos - a.pontos).forEach(eq => {
+
+        // Converte para array e ordena
+        const rankingEquipes = Object.values(equipesMap).sort((a, b) => b.pontos - a.pontos);
+
+        rankingEquipes.forEach(eq => {
             container.innerHTML += `
-                <div class="card" style="border-bottom-color: #${eq.cor}">
+                <div class="card" style="border-bottom: 4px solid #${eq.cor}">
                     ${LOGO_EQUIPE_SVG}
                     <h3>${eq.nome}</h3>
                     <div class="pontos-badge">${eq.pontos} PTS</div>
@@ -108,35 +136,39 @@ function renderizarMundial(tipo) {
     }
 }
 
+// 7. VER DETALHES DA ETAPA (API)
 async function verResultado(meetingKey, meetingName) {
     mostrarSecao('resultado-detalhe');
     document.getElementById('nome-corrida-titulo').innerText = meetingName;
     const container = document.getElementById('tabela-resultados');
-    container.innerHTML = "Buscando dados da corrida...";
+    container.innerHTML = "<p>Carregando classificação da etapa...</p>";
 
     try {
         const resPos = await fetch(`${API_BASE}/position?meeting_key=${meetingKey}`);
         const positions = await resPos.json();
         
         if (positions.length === 0) {
-            container.innerHTML = "Os dados desta corrida ainda não foram processados.";
+            container.innerHTML = "<p>Dados não disponíveis para esta etapa.</p>";
             return;
         }
 
-        const final = [...new Map(positions.map(p => [p.driver_number, p])).values()]
+        // Pega apenas a última posição registrada de cada carro
+        const ultimoEstado = [...new Map(positions.map(p => [p.driver_number, p])).values()]
             .sort((a, b) => a.position - b.position);
 
         container.innerHTML = '';
-        final.forEach((p, index) => {
-            const gap = index === 0 ? "LÍDER" : `+${(Math.random() * 5 + index).toFixed(3)}s`;
+        ultimoEstado.forEach((p) => {
             container.innerHTML += `
                 <div class="item-lista">
                     <span class="pos">${p.position}º</span>
-                    <span class="nome">Piloto #${p.driver_number}</span>
-                    <span class="tempo">${gap}</span>
+                    <span class="nome">Carro #${p.driver_number}</span>
+                    <span class="tempo">Finalizado</span>
                 </div>`;
         });
-    } catch (e) { container.innerHTML = "Erro ao buscar resultados desta etapa."; }
+    } catch (e) {
+        container.innerHTML = "<p>Erro ao buscar posições.</p>";
+    }
 }
 
+// Inicialização
 window.onload = () => mostrarSecao('calendario');
