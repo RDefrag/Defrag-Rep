@@ -1,9 +1,10 @@
 async function buscarCalendario() {
     const container = document.getElementById('lista-corridas');
+    const anoAtual = new Date().getFullYear();
     
     try {
-        // Usando a OpenF1, que é mais amigável para navegadores
-        const response = await fetch('https://api.openf1.org/v1/meetings?year=2024');
+        // Agora a URL usa o ano dinâmico
+        const response = await fetch(`https://api.openf1.org/v1/meetings?year=${anoAtual}`);
         
         if (!response.ok) throw new Error('Falha ao conectar com a API');
 
@@ -11,7 +12,6 @@ async function buscarCalendario() {
         
         container.innerHTML = ''; 
 
-        // A OpenF1 retorna um array direto de objetos
         corridas.forEach(corrida => {
             const card = document.createElement('div');
             card.className = 'corrida-card';
@@ -24,8 +24,8 @@ async function buscarCalendario() {
         });
 
     } catch (erro) {
-        container.innerHTML = '<p>Erro ao carregar dados da OpenF1. Verifique o console.</p>';
-        console.error("Erro detectado:", erro);
+        container.innerHTML = '<p>Erro ao carregar dados de 2026. Verifique o console.</p>';
+        console.error("Erro:", erro);
     }
 }
 
