@@ -1,71 +1,14 @@
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #15151e;
-    color: white;
-    margin: 0;
-    text-align: center;
-}
-
-header {
-    background-color: #e10600;
-    padding: 20px 0;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
+body { font-family: 'Segoe UI', sans-serif; background-color: #15151e; color: white; margin: 0; text-align: center; }
+header { background-color: #e10600; padding: 20px 0; position: sticky; top: 0; z-index: 1000; }
 .abas { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
-
-.btn-aba {
-    background-color: #2b2b35;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 20px;
-    font-weight: bold;
-}
-
+.btn-aba { background-color: #2b2b35; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 20px; font-weight: bold; }
 .btn-aba.active { background-color: white; color: #e10600; }
+.grid-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 20px; }
 
-.grid-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px;
-}
+.card { background-color: #2b2b35; padding: 15px; border-radius: 10px; width: 220px; border-bottom: 4px solid #e10600; transition: 0.3s; }
+.card:hover { transform: scale(1.02); }
 
-.card {
-    background-color: #2b2b35;
-    padding: 20px;
-    border-radius: 12px;
-    width: 260px;
-    border-bottom: 5px solid #e10600;
-    cursor: pointer;
-    transition: 0.3s;
-}
+.foto-piloto { width: 70px; height: 70px; border-radius: 50%; background: #15151e; border: 2px solid #444; }
+.logo-equipe { width: 50px; height: 50px; object-fit: contain; margin-bottom: 5px; }
 
-.card:hover { transform: scale(1.03); background-color: #31313d; }
-
-.logo-equipe {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    margin-bottom: 10px;
-}
-
-.foto-piloto {
-    width: 100px;
-    border-radius: 50%;
-    background: #15151e;
-}
-
-.pontos-badge {
-    background-color: #e10600;
-    padding: 5px 15px;
-    border-radius: 15px;
-    font-weight: bold;
-    display: inline-block;
-    margin-top: 10px;
-}
+.pontos-badge { background-color: #e10600; padding: 3px 12px; border-radius: 12px; font-weight: bold; display: inline-block; margin-top: 8px; font-size: 0.9rem; }
