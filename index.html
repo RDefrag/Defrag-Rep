@@ -17,23 +17,25 @@
     </header>
 
     <main>
-        <!-- Seção Calendário -->
         <section id="calendario" class="secao-conteudo">
             <h2>Calendário 2026</h2>
-            <div id="lista-corridas" class="grid-container">
-                <p>Carregando calendário...</p>
-            </div>
+            <div id="lista-corridas" class="grid-container"></div>
         </section>
 
-        <!-- Seção Pilotos -->
+        <!-- Nova seção para Resultado da Corrida -->
+        <section id="resultado-detalhe" class="secao-conteudo" style="display:none">
+            <button onclick="mostrarSecao('calendario')" class="btn-aba">⬅ Voltar ao Calendário</button>
+            <h2 id="nome-corrida-titulo">Resultado da Corrida</h2>
+            <div id="tabela-resultados" class="grid-container"></div>
+        </section>
+
         <section id="pilotos" class="secao-conteudo" style="display:none">
-            <h2>Pilotos da Temporada</h2>
+            <h2>Classificação de Pilotos</h2>
             <div id="lista-pilotos" class="grid-container"></div>
         </section>
 
-        <!-- Seção Equipes -->
         <section id="equipes" class="secao-conteudo" style="display:none">
-            <h2>Escuderias</h2>
+            <h2>Mundial de Construtores</h2>
             <div id="lista-equipes" class="grid-container"></div>
         </section>
     </main>
