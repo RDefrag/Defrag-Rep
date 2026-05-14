@@ -97,13 +97,17 @@ async function buscarCalendario() {
     }
 }
 
-// 6. RENDERIZAR CLASSIFICAÇÕES (ESTILIZADO COMO LISTA HORIZONTAL)
+// 6. RENDERIZAR CLASSIFICAÇÕES
 function renderizarMundial(tipo) {
     const container = tipo === 'pilotos' ? document.getElementById('lista-pilotos') : document.getElementById('lista-equipes');
     container.innerHTML = '';
 
+    // Ajuste de layout para garantir o formato de lista
+    container.style.display = "block";
+    container.style.maxWidth = "800px";
+    container.style.margin = "0 auto";
+
     if (tipo === 'pilotos') {
-        // Mudamos para uma estrutura de lista horizontal idêntica aos resultados
         MUNDIAL_PILOTOS.forEach((p, index) => {
             container.innerHTML += `
                 <div class="item-lista" style="border-left: 6px solid #${p.cor}; margin-bottom: 8px;">
@@ -112,14 +116,8 @@ function renderizarMundial(tipo) {
                     <span class="tempo" style="color: #e10600; font-weight: bold;">${p.pontos} PTS</span>
                 </div>`;
         });
-        
-        // Ajuste opcional: garantir que o container não use grid para não quebrar a lista
-        container.style.display = "block";
-        container.style.maxWidth = "800px";
-        container.style.margin = "0 auto";
-
     } else {
-        // Mantemos os cards para Equipes (ou podemos mudar depois se preferir)
+        // Agrupa pontos por equipe
         const equipesMap = {};
         MUNDIAL_PILOTOS.forEach(p => {
             if (!equipesMap[p.equipe]) {
@@ -128,19 +126,19 @@ function renderizarMundial(tipo) {
             equipesMap[p.equipe].pontos += p.pontos;
         });
 
+        // Ordena o ranking de construtores
         const rankingEquipes = Object.values(equipesMap).sort((a, b) => b.pontos - a.pontos);
 
-        rankingEquipes.forEach(eq => {
+        rankingEquipes.forEach((eq, index) => {
             container.innerHTML += `
-                <div class="card" style="border-bottom: 4px solid #${eq.cor}">
-                    ${LOGO_EQUIPE_SVG}
-                    <h3>${eq.nome}</h3>
-                    <div class="pontos-badge">${eq.pontos} PTS</div>
+                <div class="item-lista" style="border-left: 6px solid #${eq.cor}; margin-bottom: 8px;">
+                    <span class="pos">${index + 1}º</span>
+                    <span class="nome">${eq.nome}</span>
+                    <span class="tempo" style="color: #e10600; font-weight: bold;">${eq.pontos} PTS</span>
                 </div>`;
         });
     }
 }
-
 // 7. VER DETALHES DA ETAPA (API) - VERSÃO SIMPLIFICADA
 async function verResultado(meetingKey, meetingName) {
     mostrarSecao('resultado-detalhe');
