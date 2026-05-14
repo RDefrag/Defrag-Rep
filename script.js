@@ -136,7 +136,7 @@ function renderizarMundial(tipo) {
     }
 }
 
-// 7. VER DETALHES DA ETAPA (API) - ATUALIZADO
+// 7. VER DETALHES DA ETAPA (API) - CORRIGIDO
 async function verResultado(meetingKey, meetingName) {
     mostrarSecao('resultado-detalhe');
     document.getElementById('nome-corrida-titulo').innerText = meetingName;
@@ -147,7 +147,7 @@ async function verResultado(meetingKey, meetingName) {
     infoVoltas.innerText = "";
 
     try {
-        // Buscamos as posições e também os intervalos (laps) para saber as voltas
+        // Buscamos as posições e as voltas
         const [resPos, resLaps] = await Promise.all([
             fetch(`${API_BASE}/position?meeting_key=${meetingKey}`),
             fetch(`${API_BASE}/laps?meeting_key=${meetingKey}`)
@@ -165,41 +165,42 @@ async function verResultado(meetingKey, meetingName) {
         const ultimoEstado = [...new Map(positions.map(p => [p.driver_number, p])).values()]
             .sort((a, b) => a.position - b.position);
 
-        // 2. Identificar o líder e o número total de voltas
-        const numVoltasLider = Math.max(...laps.map(l => l.lap_number || 0));
-        infoVoltas.innerText = `Total da Prova: ${numVoltasLider} Voltas`;
+        // 2. Mapear o número de voltas completadas por cada piloto
+        const voltasPorPiloto = {};
+        laps.forEach(l => {
+            voltasPorPiloto[l.driver_number] = (voltasPorPiloto[l.driver_number] || 0) + 1;
+        });
+
+        // 3. Determinar o número total de voltas da prova (baseado no líder)
+        const numeroCarroLider = ultimoEstado[0].driver_number;
+        const totalVoltasLider = voltasPorPiloto[numeroCarroLider] || 0;
+        
+        infoVoltas.innerText = `Total da Prova: ${totalVoltasLider} Voltas`;
 
         container.innerHTML = '';
         
-        ultimoEstado.forEach((p, index) => {
-            // Busca o nome do piloto no nosso banco estático MUNDIAL_PILOTOS
-            // Nota: Se o número não for encontrado, usamos "Piloto #" como fallback
-            const dadosPiloto = MUNDIAL_PILOTOS.find(mp => mp.nome.includes(p.driver_number) || index < 20); 
-            // O mapeamento exato dependeria de ter o driver_number em MUNDIAL_PILOTOS, 
-            // mas vamos formatar com o que temos:
-            const nomeExibicao = MUNDIAL_PILOTOS[index]?.nome || `Carro #${p.driver_number}`;
-            const corBorda = MUNDIAL_PILOTOS[index]?.cor || "e10600";
+        ultimoEstado.forEach((p) => {
+            // Busca dados do piloto no MUNDIAL_PILOTOS usando o número (se disponível) ou posição
+            // Nota: Para precisão total, o ideal seria ter o driver_number no seu array MUNDIAL_PILOTOS
+            const pilotoInfo = MUNDIAL_PILOTOS[p.position - 1] || { nome: `Carro #${p.driver_number}`, cor: "e10600" };
 
-            // 3. Lógica de Tempo/Intervalo
+            // 4. Lógica de Tempo/Intervalo Revisitada
             let statusTempo = "";
-            if (p.position === 1) {
-                statusTempo = `${numVoltasLider} Voltas`; // Líder mostra total de voltas
-            } else {
-                // Cálculo simplificado de voltas atrás (Gap)
-                const lapsDestePiloto = laps.filter(l => l.driver_number === p.driver_number).length;
-                const diferencaVoltas = numVoltasLider - lapsDestePiloto;
+            const voltasDestePiloto = voltasPorPiloto[p.driver_number] || 0;
+            const diff = totalVoltasLider - voltasDestePiloto;
 
-                if (diferencaVoltas > 0) {
-                    statusTempo = `+${diferencaVoltas} ${diferencaVoltas === 1 ? 'Volta' : 'Voltas'}`;
-                } else {
-                    statusTempo = "No mesmo tempo"; // Simplificação para gaps de milissegundos
-                }
+            if (p.position === 1) {
+                statusTempo = `${totalVoltasLider} Voltas`;
+            } else if (diff > 0) {
+                statusTempo = `+${diff} ${diff === 1 ? 'Volta' : 'Voltas'}`;
+            } else {
+                statusTempo = "No mesmo tempo"; // Aqui entrariam os milissegundos se a API permitisse cálculo direto
             }
 
             container.innerHTML += `
-                <div class="item-lista" style="border-left: 6px solid #${corBorda}">
+                <div class="item-lista" style="border-left: 6px solid #${pilotoInfo.cor}">
                     <span class="pos">${p.position}º</span>
-                    <span class="nome">${nomeExibicao}</span>
+                    <span class="nome">${pilotoInfo.nome}</span>
                     <span class="tempo">${statusTempo}</span>
                 </div>`;
         });
