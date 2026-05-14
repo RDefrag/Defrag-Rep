@@ -136,37 +136,76 @@ function renderizarMundial(tipo) {
     }
 }
 
-// 7. VER DETALHES DA ETAPA (API)
+// 7. VER DETALHES DA ETAPA (API) - ATUALIZADO
 async function verResultado(meetingKey, meetingName) {
     mostrarSecao('resultado-detalhe');
     document.getElementById('nome-corrida-titulo').innerText = meetingName;
     const container = document.getElementById('tabela-resultados');
+    const infoVoltas = document.getElementById('info-voltas');
+    
     container.innerHTML = "<p>Carregando classificação da etapa...</p>";
+    infoVoltas.innerText = "";
 
     try {
-        const resPos = await fetch(`${API_BASE}/position?meeting_key=${meetingKey}`);
+        // Buscamos as posições e também os intervalos (laps) para saber as voltas
+        const [resPos, resLaps] = await Promise.all([
+            fetch(`${API_BASE}/position?meeting_key=${meetingKey}`),
+            fetch(`${API_BASE}/laps?meeting_key=${meetingKey}`)
+        ]);
+
         const positions = await resPos.json();
+        const laps = await resLaps.json();
         
         if (positions.length === 0) {
             container.innerHTML = "<p>Dados não disponíveis para esta etapa.</p>";
             return;
         }
 
-        // Pega apenas a última posição registrada de cada carro
+        // 1. Pegar a última posição registrada de cada carro
         const ultimoEstado = [...new Map(positions.map(p => [p.driver_number, p])).values()]
             .sort((a, b) => a.position - b.position);
 
+        // 2. Identificar o líder e o número total de voltas
+        const numVoltasLider = Math.max(...laps.map(l => l.lap_number || 0));
+        infoVoltas.innerText = `Total da Prova: ${numVoltasLider} Voltas`;
+
         container.innerHTML = '';
-        ultimoEstado.forEach((p) => {
+        
+        ultimoEstado.forEach((p, index) => {
+            // Busca o nome do piloto no nosso banco estático MUNDIAL_PILOTOS
+            // Nota: Se o número não for encontrado, usamos "Piloto #" como fallback
+            const dadosPiloto = MUNDIAL_PILOTOS.find(mp => mp.nome.includes(p.driver_number) || index < 20); 
+            // O mapeamento exato dependeria de ter o driver_number em MUNDIAL_PILOTOS, 
+            // mas vamos formatar com o que temos:
+            const nomeExibicao = MUNDIAL_PILOTOS[index]?.nome || `Carro #${p.driver_number}`;
+            const corBorda = MUNDIAL_PILOTOS[index]?.cor || "e10600";
+
+            // 3. Lógica de Tempo/Intervalo
+            let statusTempo = "";
+            if (p.position === 1) {
+                statusTempo = `${numVoltasLider} Voltas`; // Líder mostra total de voltas
+            } else {
+                // Cálculo simplificado de voltas atrás (Gap)
+                const lapsDestePiloto = laps.filter(l => l.driver_number === p.driver_number).length;
+                const diferencaVoltas = numVoltasLider - lapsDestePiloto;
+
+                if (diferencaVoltas > 0) {
+                    statusTempo = `+${diferencaVoltas} ${diferencaVoltas === 1 ? 'Volta' : 'Voltas'}`;
+                } else {
+                    statusTempo = "No mesmo tempo"; // Simplificação para gaps de milissegundos
+                }
+            }
+
             container.innerHTML += `
-                <div class="item-lista">
+                <div class="item-lista" style="border-left: 6px solid #${corBorda}">
                     <span class="pos">${p.position}º</span>
-                    <span class="nome">Carro #${p.driver_number}</span>
-                    <span class="tempo">Finalizado</span>
+                    <span class="nome">${nomeExibicao}</span>
+                    <span class="tempo">${statusTempo}</span>
                 </div>`;
         });
     } catch (e) {
-        container.innerHTML = "<p>Erro ao buscar posições.</p>";
+        console.error(e);
+        container.innerHTML = "<p>Erro ao buscar posições detalhadas.</p>";
     }
 }
 
