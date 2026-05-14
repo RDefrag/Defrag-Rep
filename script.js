@@ -97,23 +97,29 @@ async function buscarCalendario() {
     }
 }
 
-// 6. RENDERIZAR CLASSIFICAÇÕES (ESTÁTICO PARA PRECISÃO)
+// 6. RENDERIZAR CLASSIFICAÇÕES (ESTILIZADO COMO LISTA HORIZONTAL)
 function renderizarMundial(tipo) {
     const container = tipo === 'pilotos' ? document.getElementById('lista-pilotos') : document.getElementById('lista-equipes');
     container.innerHTML = '';
 
     if (tipo === 'pilotos') {
-        MUNDIAL_PILOTOS.forEach(p => {
+        // Mudamos para uma estrutura de lista horizontal idêntica aos resultados
+        MUNDIAL_PILOTOS.forEach((p, index) => {
             container.innerHTML += `
-                <div class="card" style="border-bottom: 4px solid #${p.cor}">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">👤</div>
-                    <h3>${p.nome}</h3>
-                    <p>${p.equipe}</p>
-                    <div class="pontos-badge">${p.pontos} PTS</div>
+                <div class="item-lista" style="border-left: 6px solid #${p.cor}; margin-bottom: 8px;">
+                    <span class="pos">${index + 1}º</span>
+                    <span class="nome">${p.nome}</span>
+                    <span class="tempo" style="color: #e10600; font-weight: bold;">${p.pontos} PTS</span>
                 </div>`;
         });
+        
+        // Ajuste opcional: garantir que o container não use grid para não quebrar a lista
+        container.style.display = "block";
+        container.style.maxWidth = "800px";
+        container.style.margin = "0 auto";
+
     } else {
-        // Agrupa pontos por equipe automaticamente
+        // Mantemos os cards para Equipes (ou podemos mudar depois se preferir)
         const equipesMap = {};
         MUNDIAL_PILOTOS.forEach(p => {
             if (!equipesMap[p.equipe]) {
@@ -122,7 +128,6 @@ function renderizarMundial(tipo) {
             equipesMap[p.equipe].pontos += p.pontos;
         });
 
-        // Converte para array e ordena
         const rankingEquipes = Object.values(equipesMap).sort((a, b) => b.pontos - a.pontos);
 
         rankingEquipes.forEach(eq => {
