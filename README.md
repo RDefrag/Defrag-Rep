@@ -38,10 +38,12 @@ Clone este repositório:
 
 Bash
 git clone https://github.com/SEU_USUARIO/Defrag-Rep.git
+
 Acesse a pasta do projeto:
 
 Bash
    cd Defrag-Rep
+   
 Inicie a aplicação:
 Abra o arquivo index.html diretamente no seu navegador ou utilize a extensão Live Server do VS Code.
 
@@ -50,9 +52,7 @@ O que eu aprendi com este projeto
 Este projeto integra meu portfólio acadêmico e consolidou conceitos fundamentais:
 
 Gerenciamento de APIs Rest: Diferença entre consumo de dados brutos e dados processados.
-
 Manipulação Avançada de DOM: Criação dinâmica de elementos baseada em respostas assíncronas.
-
 Experiência do Usuário (UX): Tradução de termos técnicos e criação de interfaces limpas e intuitivas.
 
 Resolução de Problemas: Diagnóstico e correção de falhas de comunicação com servidores (status codes).
