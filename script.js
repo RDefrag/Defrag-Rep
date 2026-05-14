@@ -136,25 +136,19 @@ function renderizarMundial(tipo) {
     }
 }
 
-// 7. VER DETALHES DA ETAPA (API) - CORRIGIDO
+// 7. VER DETALHES DA ETAPA (API) - VERSÃO SIMPLIFICADA
 async function verResultado(meetingKey, meetingName) {
     mostrarSecao('resultado-detalhe');
     document.getElementById('nome-corrida-titulo').innerText = meetingName;
     const container = document.getElementById('tabela-resultados');
     const infoVoltas = document.getElementById('info-voltas');
     
-    container.innerHTML = "<p>Carregando classificação da etapa...</p>";
-    infoVoltas.innerText = "";
+    container.innerHTML = "<p>Carregando classificação...</p>";
+    infoVoltas.innerText = ""; // Removemos o texto de total de voltas para limpar o visual
 
     try {
-        // Buscamos as posições e as voltas
-        const [resPos, resLaps] = await Promise.all([
-            fetch(`${API_BASE}/position?meeting_key=${meetingKey}`),
-            fetch(`${API_BASE}/laps?meeting_key=${meetingKey}`)
-        ]);
-
+        const resPos = await fetch(`${API_BASE}/position?meeting_key=${meetingKey}`);
         const positions = await resPos.json();
-        const laps = await resLaps.json();
         
         if (positions.length === 0) {
             container.innerHTML = "<p>Dados não disponíveis para esta etapa.</p>";
@@ -165,50 +159,27 @@ async function verResultado(meetingKey, meetingName) {
         const ultimoEstado = [...new Map(positions.map(p => [p.driver_number, p])).values()]
             .sort((a, b) => a.position - b.position);
 
-        // 2. Mapear o número de voltas completadas por cada piloto
-        const voltasPorPiloto = {};
-        laps.forEach(l => {
-            voltasPorPiloto[l.driver_number] = (voltasPorPiloto[l.driver_number] || 0) + 1;
-        });
-
-        // 3. Determinar o número total de voltas da prova (baseado no líder)
-        const numeroCarroLider = ultimoEstado[0].driver_number;
-        const totalVoltasLider = voltasPorPiloto[numeroCarroLider] || 0;
-        
-        infoVoltas.innerText = `Total da Prova: ${totalVoltasLider} Voltas`;
-
         container.innerHTML = '';
         
         ultimoEstado.forEach((p) => {
-            // Busca dados do piloto no MUNDIAL_PILOTOS usando o número (se disponível) ou posição
-            // Nota: Para precisão total, o ideal seria ter o driver_number no seu array MUNDIAL_PILOTOS
-            const pilotoInfo = MUNDIAL_PILOTOS[p.position - 1] || { nome: `Carro #${p.driver_number}`, cor: "e10600" };
-
-            // 4. Lógica de Tempo/Intervalo Revisitada
-            let statusTempo = "";
-            const voltasDestePiloto = voltasPorPiloto[p.driver_number] || 0;
-            const diff = totalVoltasLider - voltasDestePiloto;
-
-            if (p.position === 1) {
-                statusTempo = `${totalVoltasLider} Voltas`;
-            } else if (diff > 0) {
-                statusTempo = `+${diff} ${diff === 1 ? 'Volta' : 'Voltas'}`;
-            } else {
-                statusTempo = "No mesmo tempo"; // Aqui entrariam os milissegundos se a API permitisse cálculo direto
-            }
+            // Busca os dados do piloto (Nome e Equipe) no MUNDIAL_PILOTOS baseado na posição
+            const pilotoInfo = MUNDIAL_PILOTOS[p.position - 1] || { 
+                nome: `Carro #${p.driver_number}`, 
+                equipe: "Equipe não identificada", 
+                cor: "e10600" 
+            };
 
             container.innerHTML += `
                 <div class="item-lista" style="border-left: 6px solid #${pilotoInfo.cor}">
                     <span class="pos">${p.position}º</span>
                     <span class="nome">${pilotoInfo.nome}</span>
-                    <span class="tempo">${statusTempo}</span>
+                    <span class="tempo" style="color: #aaa; font-family: 'Segoe UI', sans-serif;">${pilotoInfo.equipe}</span>
                 </div>`;
         });
     } catch (e) {
         console.error(e);
-        container.innerHTML = "<p>Erro ao buscar posições detalhadas.</p>";
+        container.innerHTML = "<p>Erro ao buscar classificação.</p>";
     }
 }
-
 // Inicialização
 window.onload = () => mostrarSecao('calendario');
